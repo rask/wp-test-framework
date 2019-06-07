@@ -800,7 +800,8 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 
 		$cpt_name = 'ptawtq';
 		register_post_type(
-			$cpt_name, array(
+			$cpt_name,
+			array(
 				'taxonomies'  => array( 'post_tag', 'category' ),
 				'rewrite'     => true,
 				'has_archive' => true,
@@ -828,7 +829,8 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 	function pre_get_posts_with_tax_query( &$query ) {
 		$term = get_term_by( 'slug', 'tag-slug', 'post_tag' );
 		$query->set(
-			'tax_query', array(
+			'tax_query',
+			array(
 				array(
 					'taxonomy' => 'post_tag',
 					'field'    => 'term_id',
@@ -843,7 +845,8 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 
 		$cpt_name = 'thearray';
 		register_post_type(
-			$cpt_name, array(
+			$cpt_name,
+			array(
 				'taxonomies'  => array( 'post_tag', 'category' ),
 				'rewrite'     => true,
 				'has_archive' => true,
@@ -894,7 +897,8 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 		$post_type = 'test_hierarchical';
 
 		register_post_type(
-			$post_type, array(
+			$post_type,
+			array(
 				'hierarchical' => true,
 				'rewrite'      => true,
 				'has_archive'  => true,
@@ -999,7 +1003,9 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 		$post_id = self::factory()->post->create();
 
 		$attachment_id = self::factory()->attachment->create_object(
-			'image.jpg', $post_id, array(
+			'image.jpg',
+			$post_id,
+			array(
 				'post_mime_type' => 'image/jpeg',
 			)
 		);
@@ -1584,4 +1590,24 @@ class Tests_Query_Conditionals extends WP_UnitTestCase {
 		$this->assertTrue( is_single( $p2 ) );
 		$this->assertFalse( is_single( $p1 ) );
 	}
+
+	/**
+	 * @ticket 44005
+	 * @group privacy
+	 */
+	public function test_is_privacy_policy() {
+		$page_id = self::factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Privacy Policy',
+			)
+		);
+
+		update_option( 'wp_page_for_privacy_policy', $page_id );
+
+		$this->go_to( get_permalink( $page_id ) );
+
+		$this->assertQueryTrue( 'is_page', 'is_singular', 'is_privacy_policy' );
+	}
+
 }

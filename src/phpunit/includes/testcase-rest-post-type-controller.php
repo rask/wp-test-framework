@@ -10,7 +10,7 @@ abstract class WP_Test_REST_Post_Type_Controller_Testcase extends WP_Test_REST_C
 		$this->assertEquals( $post->post_name, $data['slug'] );
 		$this->assertEquals( get_permalink( $post->ID ), $data['link'] );
 		if ( '0000-00-00 00:00:00' === $post->post_date_gmt ) {
-			$post_date_gmt = date( 'Y-m-d H:i:s', strtotime( $post->post_date ) - ( get_option( 'gmt_offset' ) * 3600 ) );
+			$post_date_gmt = gmdate( 'Y-m-d H:i:s', strtotime( $post->post_date ) - ( get_option( 'gmt_offset' ) * 3600 ) );
 			$this->assertEquals( mysql_to_rfc3339( $post_date_gmt ), $data['date_gmt'] );
 		} else {
 			$this->assertEquals( mysql_to_rfc3339( $post->post_date_gmt ), $data['date_gmt'] );
@@ -18,7 +18,7 @@ abstract class WP_Test_REST_Post_Type_Controller_Testcase extends WP_Test_REST_C
 		$this->assertEquals( mysql_to_rfc3339( $post->post_date ), $data['date'] );
 
 		if ( '0000-00-00 00:00:00' === $post->post_modified_gmt ) {
-			$post_modified_gmt = date( 'Y-m-d H:i:s', strtotime( $post->post_modified ) - ( get_option( 'gmt_offset' ) * 3600 ) );
+			$post_modified_gmt = gmdate( 'Y-m-d H:i:s', strtotime( $post->post_modified ) - ( get_option( 'gmt_offset' ) * 3600 ) );
 			$this->assertEquals( mysql_to_rfc3339( $post_modified_gmt ), $data['modified_gmt'] );
 		} else {
 			$this->assertEquals( mysql_to_rfc3339( $post->post_modified_gmt ), $data['modified_gmt'] );
@@ -200,7 +200,7 @@ abstract class WP_Test_REST_Post_Type_Controller_Testcase extends WP_Test_REST_C
 	}
 
 	protected function check_get_posts_response( $response, $context = 'view' ) {
-		$this->assertNotInstanceOf( 'WP_Error', $response );
+		$this->assertNotWPError( $response );
 		$response = rest_ensure_response( $response );
 		$this->assertEquals( 200, $response->get_status() );
 
@@ -217,7 +217,8 @@ abstract class WP_Test_REST_Post_Type_Controller_Testcase extends WP_Test_REST_C
 			foreach ( $links as &$links_array ) {
 				foreach ( $links_array as &$link ) {
 					$attributes         = array_diff_key(
-						$link, array(
+						$link,
+						array(
 							'href' => 1,
 							'name' => 1,
 						)
@@ -232,7 +233,7 @@ abstract class WP_Test_REST_Post_Type_Controller_Testcase extends WP_Test_REST_C
 	}
 
 	protected function check_get_post_response( $response, $context = 'view' ) {
-		$this->assertNotInstanceOf( 'WP_Error', $response );
+		$this->assertNotWPError( $response );
 		$response = rest_ensure_response( $response );
 		$this->assertEquals( 200, $response->get_status() );
 
@@ -243,7 +244,7 @@ abstract class WP_Test_REST_Post_Type_Controller_Testcase extends WP_Test_REST_C
 	}
 
 	protected function check_create_post_response( $response ) {
-		$this->assertNotInstanceOf( 'WP_Error', $response );
+		$this->assertNotWPError( $response );
 		$response = rest_ensure_response( $response );
 
 		$this->assertEquals( 201, $response->get_status() );
@@ -256,7 +257,7 @@ abstract class WP_Test_REST_Post_Type_Controller_Testcase extends WP_Test_REST_C
 	}
 
 	protected function check_update_post_response( $response ) {
-		$this->assertNotInstanceOf( 'WP_Error', $response );
+		$this->assertNotWPError( $response );
 		$response = rest_ensure_response( $response );
 
 		$this->assertEquals( 200, $response->get_status() );
@@ -284,7 +285,8 @@ abstract class WP_Test_REST_Post_Type_Controller_Testcase extends WP_Test_REST_C
 
 	protected function set_raw_post_data( $args = array() ) {
 		return wp_parse_args(
-			$args, $this->set_post_data(
+			$args,
+			$this->set_post_data(
 				array(
 					'title'   => array(
 						'raw' => 'Post Title',

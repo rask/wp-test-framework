@@ -62,6 +62,14 @@ if ( is_multisite() ) :
 			$this->assertContains( 'user_email', $v['errors']->get_error_codes() );
 		}
 
+		public function test_should_not_fail_for_emails_from_whitelisted_domains_with_mixed_case() {
+			$domains = array( 'foo.com', 'bar.org' );
+			update_site_option( 'limited_email_domains', $domains );
+
+			$v = wpmu_validate_user_signup( 'foo123', 'foo@BAR.org' );
+			$this->assertNotContains( 'user_email', $v['errors']->get_error_codes() );
+		}
+
 		public function test_should_fail_for_existing_user_name() {
 			$u = self::factory()->user->create( array( 'user_login' => 'foo123' ) );
 			$v = wpmu_validate_user_signup( 'foo123', 'foo@example.com' );
@@ -91,7 +99,7 @@ if ( is_multisite() ) :
 			remove_filter( 'wpmu_signup_user_notification', '__return_true' );
 
 			global $wpdb;
-			$date = date( 'Y-m-d H:i:s', time() - ( 2 * DAY_IN_SECONDS ) - 60 );
+			$date = gmdate( 'Y-m-d H:i:s', time() - ( 2 * DAY_IN_SECONDS ) - 60 );
 			$wpdb->update( $wpdb->signups, array( 'registered' => $date ), array( 'user_login' => 'foo123' ) );
 
 			$v = wpmu_validate_user_signup( 'foo123', 'foo2@example.com' );
@@ -115,7 +123,7 @@ if ( is_multisite() ) :
 			remove_filter( 'wpmu_signup_user_notification', '__return_true' );
 
 			global $wpdb;
-			$date = date( 'Y-m-d H:i:s', time() - ( 2 * DAY_IN_SECONDS ) - 60 );
+			$date = gmdate( 'Y-m-d H:i:s', time() - ( 2 * DAY_IN_SECONDS ) - 60 );
 			$wpdb->update( $wpdb->signups, array( 'registered' => $date ), array( 'user_login' => 'foo123' ) );
 
 			$v = wpmu_validate_user_signup( 'foo2', 'foo2@example.com' );
@@ -156,6 +164,36 @@ if ( is_multisite() ) :
 			delete_site_option( 'banned_email_domains' );
 
 			$this->assertNotContains( 'user_email', $valid['errors']->get_error_codes() );
+		}
+
+		/**
+		 * @ticket 43667
+		 */
+		public function test_signup_nonce_check() {
+			$original_php_self       = $_SERVER['PHP_SELF'];
+			$_SERVER['PHP_SELF']     = '/wp-signup.php';
+			$_POST['signup_form_id'] = 'user-signup-form';
+			$_POST['_signup_form']   = wp_create_nonce( 'signup_form_' . $_POST['signup_form_id'] );
+
+			$valid               = wpmu_validate_user_signup( 'validusername', 'email@example.com' );
+			$_SERVER['PHP_SELF'] = $original_php_self;
+
+			$this->assertNotContains( 'invalid_nonce', $valid['errors']->get_error_codes() );
+		}
+
+		/**
+		 * @ticket 43667
+		 */
+		public function test_signup_nonce_check_invalid() {
+			$original_php_self       = $_SERVER['PHP_SELF'];
+			$_SERVER['PHP_SELF']     = '/wp-signup.php';
+			$_POST['signup_form_id'] = 'user-signup-form';
+			$_POST['_signup_form']   = wp_create_nonce( 'invalid' );
+
+			$valid               = wpmu_validate_user_signup( 'validusername', 'email@example.com' );
+			$_SERVER['PHP_SELF'] = $original_php_self;
+
+			$this->assertContains( 'invalid_nonce', $valid['errors']->get_error_codes() );
 		}
 	}
 

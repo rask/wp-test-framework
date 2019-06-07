@@ -135,7 +135,8 @@ class Test_WP_Customize_Nav_Menu_Setting extends WP_UnitTestCase {
 		$parent_menu_id = wp_create_nav_menu( wp_slash( "Parent $menu_name" ) );
 		$description    = 'Hello my world \\o/.';
 		$menu_id        = wp_update_nav_menu_object(
-			0, wp_slash(
+			0,
+			wp_slash(
 				array(
 					'menu-name'   => $menu_name,
 					'parent'      => $parent_menu_id,
@@ -171,7 +172,8 @@ class Test_WP_Customize_Nav_Menu_Setting extends WP_UnitTestCase {
 		do_action( 'customize_register', $this->wp_customize );
 
 		$menu_id    = wp_update_nav_menu_object(
-			0, wp_slash(
+			0,
+			wp_slash(
 				array(
 					'menu-name'   => 'Name 1 \\o/',
 					'description' => 'Description 1 \\o/',
@@ -253,7 +255,7 @@ class Test_WP_Customize_Nav_Menu_Setting extends WP_UnitTestCase {
 
 		$term = (array) wp_get_nav_menu_object( $menu_id );
 		$this->assertNotEmpty( $term );
-		$this->assertNotInstanceOf( 'WP_Error', $term );
+		$this->assertNotWPError( $term );
 		$this->assertEqualSets( $post_value, wp_array_slice_assoc( $term, array_keys( $value ) ) );
 		$this->assertEquals( $menu_id, $term['term_id'] );
 		$this->assertEquals( $menu_id, $term['term_taxonomy_id'] );
@@ -282,7 +284,8 @@ class Test_WP_Customize_Nav_Menu_Setting extends WP_UnitTestCase {
 		do_action( 'customize_register', $this->wp_customize );
 
 		$menu_id                        = wp_update_nav_menu_object(
-			0, wp_slash(
+			0,
+			wp_slash(
 				array(
 					'menu-name'   => 'Name 1 \\o/',
 					'description' => 'Description 1 \\o/',
@@ -351,7 +354,8 @@ class Test_WP_Customize_Nav_Menu_Setting extends WP_UnitTestCase {
 		do_action( 'customize_register', $this->wp_customize );
 
 		$menu_id                        = wp_update_nav_menu_object(
-			0, wp_slash(
+			0,
+			wp_slash(
 				array(
 					'menu-name'   => 'Name 1 \\o/',
 					'description' => 'Description 1 \\o/',

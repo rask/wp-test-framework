@@ -322,7 +322,8 @@ class Tests_Post_Revisions extends WP_UnitTestCase {
 	 */
 	function test_revision_view_caps_cpt() {
 		register_post_type(
-			$this->post_type, array(
+			$this->post_type,
+			array(
 				'capability_type' => 'event',
 				'map_meta_cap'    => true,
 				'supports'        => array( 'revisions' ),
@@ -363,7 +364,8 @@ class Tests_Post_Revisions extends WP_UnitTestCase {
 	 */
 	function test_revision_restore_caps_cpt() {
 		register_post_type(
-			$this->post_type, array(
+			$this->post_type,
+			array(
 				'capability_type' => 'event',
 				'map_meta_cap'    => true,
 				'supports'        => array( 'revisions' ),
@@ -408,7 +410,8 @@ class Tests_Post_Revisions extends WP_UnitTestCase {
 	 */
 	function test_revision_restore_caps_before_publish() {
 		register_post_type(
-			$this->post_type, array(
+			$this->post_type,
+			array(
 				'capability_type' => 'post',
 				'capabilities'    => array(
 					// No one can edit this post type once published.
@@ -467,7 +470,8 @@ class Tests_Post_Revisions extends WP_UnitTestCase {
 	 */
 	function test_revision_diff_caps_cpt() {
 		register_post_type(
-			$this->post_type, array(
+			$this->post_type,
+			array(
 				'capability_type' => 'event',
 				'map_meta_cap'    => true,
 				'supports'        => array( 'revisions' ),
@@ -528,7 +532,7 @@ class Tests_Post_Revisions extends WP_UnitTestCase {
 		$now          = time();
 		for ( $j = 1; $j < 3; $j++ ) {
 			// Manually modify dates to ensure they're different.
-			$date                                  = date( 'Y-m-d H:i:s', $now - ( $j * 10 ) );
+			$date                                  = gmdate( 'Y-m-d H:i:s', $now - ( $j * 10 ) );
 			$post_revision_fields['post_date']     = $date;
 			$post_revision_fields['post_date_gmt'] = $date;
 
@@ -559,7 +563,7 @@ class Tests_Post_Revisions extends WP_UnitTestCase {
 		$post_revision_fields = wp_slash( $post_revision_fields );
 
 		$revision_ids = array();
-		$date         = date( 'Y-m-d H:i:s', time() - 10 );
+		$date         = gmdate( 'Y-m-d H:i:s', time() - 10 );
 		for ( $j = 1; $j < 3; $j++ ) {
 			// Manually modify dates to ensure they're the same.
 			$post_revision_fields['post_date']     = $date;

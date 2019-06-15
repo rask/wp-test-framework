@@ -12,7 +12,7 @@
  */
 class WP_UnitTest_Factory_For_Blog extends WP_UnitTest_Factory_For_Thing {
 
-	function __construct( $factory = null ) {
+	public function __construct( $factory = null ) {
 		global $current_site, $base;
 		parent::__construct( $factory );
 		$this->default_generation_definitions = array(
@@ -23,7 +23,14 @@ class WP_UnitTest_Factory_For_Blog extends WP_UnitTest_Factory_For_Thing {
 		);
 	}
 
-	function create_object( $args ) {
+	/**
+	 * Creates a blog object.
+	 *
+	 * @param array $args Arguments for the site object.
+	 *
+	 * @return int|WP_Error Returns WP_Error object on failure, the site ID on success.
+	 */
+	public function create_object( $args ) {
 		global $wpdb;
 		$meta    = isset( $args['meta'] ) ? $args['meta'] : array( 'public' => 1 );
 		$user_id = isset( $args['user_id'] ) ? $args['user_id'] : get_current_user_id();
@@ -38,9 +45,24 @@ class WP_UnitTest_Factory_For_Blog extends WP_UnitTest_Factory_For_Thing {
 		return $blog;
 	}
 
-	function update_object( $blog_id, $fields ) {}
+	/**
+	 * Updates a blog object. Not implemented.
+	 *
+	 * @param int   $blog_id The blog id to update.
+	 * @param array $fields  The fields to update.
+	 *
+	 * @return void
+	 */
+	public function update_object( $blog_id, $fields ) {}
 
-	function get_object_by_id( $blog_id ) {
+	/**
+	 * Retrieves a site by given blog id.
+	 *
+	 * @param int $blog_id The blog id to retrieve.
+	 *
+	 * @return null|WP_Site The site object or null if not found.
+	 */
+	public function get_object_by_id( $blog_id ) {
 		return get_site( $blog_id );
 	}
 }

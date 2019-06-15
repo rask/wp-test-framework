@@ -421,7 +421,7 @@ class Tests_Image_Editor_Imagick extends WP_Image_UnitTestCase {
 	 * Test rotating an image 180 deg
 	 */
 	public function test_rotate() {
-		$file = DIR_TESTDATA . '/images/gradient-square.jpg';
+		$file = DIR_TESTDATA . '/images/one-blue-pixel-100x100.png';
 
 		$imagick_image_editor = new WP_Image_Editor_Imagick( $file );
 		$imagick_image_editor->load();
@@ -429,7 +429,7 @@ class Tests_Image_Editor_Imagick extends WP_Image_UnitTestCase {
 		$property = new ReflectionProperty( $imagick_image_editor, 'image' );
 		$property->setAccessible( true );
 
-		$color_top_left = $property->getValue( $imagick_image_editor )->getImagePixelColor( 1, 1 )->getColor();
+		$color_top_left = $property->getValue( $imagick_image_editor )->getImagePixelColor( 0, 0 )->getColor();
 
 		$imagick_image_editor->rotate( 180 );
 
@@ -440,7 +440,7 @@ class Tests_Image_Editor_Imagick extends WP_Image_UnitTestCase {
 	 * Test flipping an image
 	 */
 	public function test_flip() {
-		$file = DIR_TESTDATA . '/images/gradient-square.jpg';
+		$file = DIR_TESTDATA . '/images/one-blue-pixel-100x100.png';
 
 		$imagick_image_editor = new WP_Image_Editor_Imagick( $file );
 		$imagick_image_editor->load();
@@ -448,7 +448,7 @@ class Tests_Image_Editor_Imagick extends WP_Image_UnitTestCase {
 		$property = new ReflectionProperty( $imagick_image_editor, 'image' );
 		$property->setAccessible( true );
 
-		$color_top_left = $property->getValue( $imagick_image_editor )->getImagePixelColor( 1, 1 )->getColor();
+		$color_top_left = $property->getValue( $imagick_image_editor )->getImagePixelColor( 0, 0 )->getColor();
 
 		$imagick_image_editor->flip( true, false );
 
@@ -465,7 +465,7 @@ class Tests_Image_Editor_Imagick extends WP_Image_UnitTestCase {
 
 		$editor = new WP_Image_Editor_Imagick( $file );
 
-		$this->assertNotInstanceOf( 'WP_Error', $editor );
+		$this->assertNotWPError( $editor );
 
 		$editor->load();
 		$editor->resize( 5, 5 );
@@ -492,7 +492,7 @@ class Tests_Image_Editor_Imagick extends WP_Image_UnitTestCase {
 
 		$editor = new WP_Image_Editor_Imagick( $file );
 
-		$this->assertNotInstanceOf( 'WP_Error', $editor );
+		$this->assertNotWPError( $editor );
 
 		$editor->load();
 
@@ -524,7 +524,7 @@ class Tests_Image_Editor_Imagick extends WP_Image_UnitTestCase {
 
 		$image_editor = new WP_Image_Editor_Imagick( $save_to_file );
 		$image_editor->load();
-		$this->assertNotInstanceOf( 'WP_Error', $image_editor );
+		$this->assertNotWPError( $image_editor );
 		$image_editor->rotate( 180 );
 		$image_editor->save( $save_to_file );
 

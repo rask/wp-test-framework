@@ -52,8 +52,41 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 				'title',
 				'url',
 				'width',
-			), array_keys( $schema )
+			),
+			array_keys( $schema )
 		);
+	}
+
+	/**
+	 * Test schema filtering.
+	 *
+	 * @covers WP_Widget_Media_Image::get_instance_schema
+	 *
+	 * @ticket 45029
+	 */
+	function test_get_instance_schema_filtering() {
+		$widget = new WP_Widget_Media_Image();
+		$schema = $widget->get_instance_schema();
+
+		add_filter( 'widget_media_image_instance_schema', array( $this, 'filter_instance_schema' ), 10, 2 );
+		$schema = $widget->get_instance_schema();
+
+		$this->assertSame( 'large', $schema['size']['default'] );
+	}
+
+	/**
+	 * Filters instance schema.
+	 *
+	 * @since 5.2.0
+	 *
+	 * @param array                 $schema Schema.
+	 * @param WP_Widget_Media_Image $widget Widget.
+	 * @return array
+	 */
+	public function filter_instance_schema( $schema, $widget ) {
+		// Override the default size value ('medium').
+		$schema['size']['default'] = 'large';
+		return $schema;
 	}
 
 	/**
@@ -80,7 +113,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 				'no_media_selected',
 				'add_media',
 				'unsupported_file_type',
-			), array_keys( $widget->l10n )
+			),
+			array_keys( $widget->l10n )
 		);
 	}
 
@@ -104,7 +138,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'attachment_id' => 'media',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame( $result, $instance );
 
@@ -119,7 +154,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'url' => 'not_a_url',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertNotSame( $result, $instance );
 		$this->assertStringStartsWith( 'http://', $result['url'] );
@@ -135,7 +171,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'title' => '<h1>W00t!</h1>',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertNotSame( $result, $instance );
 
@@ -150,7 +187,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'size' => 'big league',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame( $result, $instance );
 
@@ -165,7 +203,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'width' => 'wide',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame( $result, $instance );
 
@@ -180,7 +219,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'height' => 'high',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame( $result, $instance );
 
@@ -195,10 +235,12 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'caption' => '"><i onload="alert(\'hello\')" />',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame(
-			$result, array(
+			$result,
+			array(
 				'caption' => '"&gt;<i />',
 			)
 		);
@@ -214,10 +256,12 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'alt' => '"><i onload="alert(\'hello\')" />',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame(
-			$result, array(
+			$result,
+			array(
 				'alt' => '">',
 			)
 		);
@@ -233,7 +277,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'link_type' => 'interesting',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame( $result, $instance );
 
@@ -248,7 +293,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'link_url' => 'not_a_url',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertNotSame( $result, $instance );
 		$this->assertStringStartsWith( 'http://', $result['link_url'] );
@@ -264,10 +310,12 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'image_classes' => '"><i onload="alert(\'hello\')" />',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame(
-			$result, array(
+			$result,
+			array(
 				'image_classes' => 'i onloadalerthello',
 			)
 		);
@@ -283,10 +331,12 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'link_classes' => '"><i onload="alert(\'hello\')" />',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame(
-			$result, array(
+			$result,
+			array(
 				'link_classes' => 'i onloadalerthello',
 			)
 		);
@@ -302,10 +352,12 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'link_rel' => '"><i onload="alert(\'hello\')" />',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame(
-			$result, array(
+			$result,
+			array(
 				'link_rel' => 'i onloadalerthello',
 			)
 		);
@@ -321,7 +373,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'link_target_blank' => 'top',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame( $result, $instance );
 
@@ -336,7 +389,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'image_title' => '<h1>W00t!</h1>',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertNotSame( $result, $instance );
 
@@ -344,7 +398,8 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 		$result = $widget->update(
 			array(
 				'imaginary_key' => 'value',
-			), $instance
+			),
+			$instance
 		);
 		$this->assertSame( $result, $instance );
 	}
@@ -486,6 +541,7 @@ class Test_WP_Widget_Media_Image extends WP_UnitTestCase {
 
 		$this->assertContains( '<a href="https://example.org"', $output );
 		$this->assertContains( 'target="_blank"', $output );
+		$this->assertContains( 'rel="noopener noreferrer"', $output );
 
 		// Populate caption in attachment.
 		wp_update_post(

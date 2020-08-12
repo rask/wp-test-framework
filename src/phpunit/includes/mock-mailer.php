@@ -1,7 +1,16 @@
 <?php
-require_once( ABSPATH . '/wp-includes/class-phpmailer.php' );
+global $wp_version;
 
-class MockPHPMailer extends PHPMailer {
+if ( version_compare( $wp_version, '5.5', '>=' ) ) {
+	require_once ABSPATH . '/wp-includes/PHPMailer/PHPMailer.php';
+	class MailerClass extends PHPMailer\PHPMailer\PHPMailer {}
+} else {
+	require_once ABSPATH . '/wp-includes/class-phpmailer.php';
+	class MailerClass extends PHPMailer {}
+}
+
+class MockPHPMailer extends MailerClass {
+
 	var $mock_sent = array();
 
 	function preSend() {

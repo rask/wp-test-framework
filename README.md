@@ -1,4 +1,4 @@
-# rask/wp-test-framework
+# msaari/wp-test-framework
 
 Extracted and librarized version of WordPress core's PHPUnit test framework to help with writing integration tests in WordPress plugins and themes.
 

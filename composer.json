@@ -1,16 +1,16 @@
 {
-    "name": "rask/wp-test-framework",
+    "name": "msaari/wp-test-framework",
     "description": "Extracted library from WordPress PHPUnit framework to aid in integration testing of plugins and themes",
     "type": "library",
     "keywords": ["wordpress", "testing", "tests", "phpunit"],
     "license": "GPL-3.0-or-later",
     "support": {
-        "source": "https://github.com/rask/wp-test-framework"
+        "source": "https://github.com/msaari/wp-test-framework"
     },
 
     "autoload": {
         "psr-4": {
-            "rask\\WpTestFramework\\": "src/"
+            "msaari\\WpTestFramework\\": "src/"
         }
     },
 

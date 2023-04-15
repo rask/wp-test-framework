@@ -1,4 +1,4 @@
-# rask/wp-test-framework
+# msaari/wp-test-framework
 
 Extracted and librarized version of WordPress core's PHPUnit test framework to help with writing integration tests in WordPress plugins and themes.
 
@@ -10,7 +10,7 @@ The sources are updated when needed, so there may be minor differences between t
 
 This library should be installed as a Composer dependency inside your plugin or theme:
 
-    $ composer require --dev rask/wp-test-framework
+    $ composer require --dev msaari/wp-test-framework
     
 ### WordPress testing installation setup
 
@@ -34,7 +34,7 @@ Inside your plugin/theme directory you need to setup PHPUnit. Any regular-ish `p
     
     require_once './vendor/autoload.php';
     
-    \rask\WpTestFramework\Framework::load();
+    \msaari\WpTestFramework\Framework::load();
 
 Then you should load your plugin or theme. In the same bootstrap file you can do the following:
 
@@ -42,7 +42,7 @@ Then you should load your plugin or theme. In the same bootstrap file you can do
     
     require_once './vendor/autoload.php';
     
-    \rask\WpTestFramework\Framework::load();
+    \msaari\WpTestFramework\Framework::load();
     
     // Load your plugin
     
